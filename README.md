@@ -90,7 +90,8 @@ curl http://127.0.0.1:5000/avistamientos/resumen
 ## Uso de IA
 
 - IA usada: **Claude** (Anthropic), modelo **Sonnet 5.5**.
-- Se usó para generar la base del código y esta guía; revisé y entiendo el código.
+- La usé como apoyo para este trabajo: me ayudó a entender cómo funcionan Git, GitHub y Flask, cómo se conectan las rutas con la base de datos SQLite.
+- Yo probé todos los endpoints con curl, revisé el código y lo entiendo, y soy responsable de lo que publico.
 
 ## Autor
 
