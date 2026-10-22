@@ -1,17 +1,19 @@
 import os
 import sqlite3
-from datetime import datetime
 
 from flask import Flask, g, jsonify, request
+
+from validador import ValidadorDeAvistamiento
 
 CAMPOS = ("especie", "lugar", "fecha", "observador")
 
 
-def create_app(db_path=None):
+def create_app(db_path=None, reloj=None):
     app = Flask(__name__)
     app.config["DB_PATH"] = db_path or os.path.join(
         os.path.dirname(os.path.abspath(__file__)), "avistamientos.db"
     )
+    validador = ValidadorDeAvistamiento(reloj)
 
     # ---------- Base de datos (SQLite) ----------
     def get_db():
@@ -38,22 +40,6 @@ def create_app(db_path=None):
         )
 
     # ---------- Utilidades ----------
-    def validar(datos):
-        """Devuelve un mensaje de error, o None si los datos son válidos."""
-        if not isinstance(datos, dict):
-            return "El cuerpo debe ser un objeto JSON"
-        faltan = [
-            c for c in CAMPOS
-            if not isinstance(datos.get(c), str) or not datos[c].strip()
-        ]
-        if faltan:
-            return "Faltan datos o están vacíos: " + ", ".join(faltan)
-        try:
-            datetime.strptime(datos["fecha"], "%Y-%m-%d")
-        except ValueError:
-            return "La fecha debe tener formato AAAA-MM-DD"
-        return None
-
     def buscar(id_):
         fila = get_db().execute(
             "SELECT * FROM avistamientos WHERE id = ?", (id_,)
@@ -86,7 +72,7 @@ def create_app(db_path=None):
     @app.post("/avistamientos")
     def crear():
         datos = request.get_json(silent=True)
-        error = validar(datos)
+        error = validador.validar(datos)
         if error:
             return jsonify({"error": error}), 400
         db = get_db()
@@ -103,7 +89,7 @@ def create_app(db_path=None):
         if not buscar(id_):
             return no_encontrado()
         datos = request.get_json(silent=True)
-        error = validar(datos)
+        error = validador.validar(datos)
         if error:
             return jsonify({"error": error}), 400
         db = get_db()
