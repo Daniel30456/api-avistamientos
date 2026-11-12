@@ -1,0 +1,55 @@
+// Diagrama de dependencias de código (imports) de la API después del refactor.
+// Generar:  dot -Tpng -Gdpi=150 diagrama_dependencias.dot -o diagrama_dependencias.png
+digraph G {
+  graph [rankdir=LR, fontname="Helvetica", fontsize=12, nodesep=0.35, ranksep=0.7,
+         label="Flecha = dependencia de código (import). Sólida: usa.  Punteada con punta vacía: implementa el puerto.\nToda flecha que cruza el borde del hexágono apunta hacia adentro.",
+         labelloc=b];
+  node  [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, fillcolor="#ffffff", color="#555555"];
+  edge  [color="#333333", arrowsize=0.8];
+
+  subgraph cluster_primarios {
+    label="Adaptadores primarios (driving)\navistamientos/adaptadores/primarios"; style="rounded,filled"; fillcolor="#e8f0fb"; color="#7a9cc6"; fontname="Helvetica";
+    http   [label="http_flask.py\ncrear_app_flask()\n(único que conoce Flask)"];
+  }
+  actor_http  [label="Cliente HTTP\n(curl, navegador)", shape=plaintext, style=""];
+  actor_test  [label="Pruebas de integración\ntests/test_api.py", shape=plaintext, style=""];
+
+  subgraph cluster_app {
+    label="Aplicación: interior del hexágono\navistamientos/aplicacion  (no importa Flask, sqlite3 ni adaptadores)"; style="rounded,filled"; fillcolor="#fdf5e2"; color="#c9a14a"; fontname="Helvetica";
+    p_prim   [label="puertos/primarios.py\nGestionDeAvistamientos", fillcolor="#fff2c2"];
+    servicio [label="servicio.py\nServicioDeAvistamientos"];
+    validador[label="validador.py\nValidadorDeAvistamiento"];
+    modelo   [label="modelo.py\nAvistamiento, ConteoPorEspecie"];
+    errores  [label="errores.py\nAvistamientoNoEncontrado,\nDatosInvalidos"];
+    p_repo   [label="puertos/secundarios.py\nRepositorioDeAvistamientos", fillcolor="#fff2c2"];
+    p_reloj  [label="puertos/secundarios.py\nReloj", fillcolor="#fff2c2"];
+  }
+
+  subgraph cluster_secundarios {
+    label="Adaptadores secundarios (driven)\navistamientos/adaptadores/secundarios  y  tests/"; style="rounded,filled"; fillcolor="#e7f5ea"; color="#6aa97a"; fontname="Helvetica";
+    sqlite  [label="repositorio_sqlite.py\nRepositorioSQLite\n(único con SQL)"];
+    rsis    [label="reloj_sistema.py\nRelojSistema"];
+    rfijo   [label="tests/dobles.py\nRelojFijo (prueba)"];
+  }
+  db [label="SQLite\navistamientos.db", shape=cylinder, fillcolor="#f2f2f2"];
+
+  composicion [label="app.py\ncreate_app()\nraíz de composición:\narma y conecta las piezas", fillcolor="#f0e8f8", color="#9a7cc0"];
+
+  actor_http -> http [style=dotted, arrowhead=vee, label="petición", fontsize=9];
+  actor_test -> composicion [style=dotted, arrowhead=vee, label="create_app()", fontsize=9];
+
+  http -> p_prim;  http -> errores;
+  servicio -> p_prim [style=dashed, arrowhead=onormal];
+  servicio -> validador; servicio -> modelo; servicio -> errores; servicio -> p_repo;
+  validador -> p_reloj;
+  p_prim -> modelo; p_repo -> modelo;
+
+  sqlite -> p_repo [style=dashed, arrowhead=onormal, dir=forward];
+  sqlite -> modelo;
+  rsis  -> p_reloj [style=dashed, arrowhead=onormal];
+  rfijo -> p_reloj [style=dashed, arrowhead=onormal];
+  sqlite -> db [style=dotted, arrowhead=vee, label="SQL", fontsize=9];
+
+  composicion -> http; composicion -> servicio; composicion -> validador;
+  composicion -> sqlite; composicion -> rsis;
+}

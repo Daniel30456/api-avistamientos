@@ -15,7 +15,24 @@ API REST en **Python + Flask** con base de datos **SQLite** (módulo `sqlite3` d
 
 ## Regla de validación
 
-Un avistamiento es válido si: la especie tiene entre 3 y 50 caracteres, la fecha tiene formato `AAAA-MM-DD` y no es posterior a hoy, y el lugar y el observador no están vacíos. Si no es válido, POST y PUT responden 400 con un mensaje que indica qué campo falló. La validación vive en `validador.py` (`ValidadorDeAvistamiento`), separada de los endpoints.
+Un avistamiento es válido si: la especie tiene entre 3 y 50 caracteres, la fecha tiene formato `AAAA-MM-DD` y no es posterior a hoy, y el lugar y el observador no están vacíos. Si no es válido, POST y PUT responden 400 con un mensaje que indica qué campo falló. La validación vive en `avistamientos/aplicacion/validador.py` (`ValidadorDeAvistamiento`), dentro del núcleo de la aplicación y separada de los endpoints.
+
+## Arquitectura (Taller 5)
+
+El código está organizado con **arquitectura hexagonal (puertos y adaptadores)**:
+
+```text
+app.py                         # arranque y composición: conecta los adaptadores con la aplicación
+avistamientos/
+  aplicacion/                  # interior: modelo, validador, servicio (casos de uso) y puertos
+    puertos/primarios.py       #   lo que la aplicación ofrece (GestionDeAvistamientos)
+    puertos/secundarios.py     #   lo que necesita (RepositorioDeAvistamientos, Reloj)
+  adaptadores/
+    primarios/http_flask.py    # rutas HTTP con Flask
+    secundarios/               # RepositorioSQLite y RelojSistema
+```
+
+Las dependencias de código apuntan siempre hacia `aplicacion/`, que no importa Flask ni sqlite3. El documento del taller, con el diagrama y la evidencia antes y después, está en [`docs/taller5/Taller5_Clean_Architecture.md`](docs/taller5/Taller5_Clean_Architecture.md).
 
 ## Requisitos
 
@@ -109,21 +126,24 @@ python -m pytest
 **Comando para generar la cobertura:**
 
 ```bash
-python -m pytest --cov=app --cov=validador --cov-report=term-missing
+python -m pytest --cov=app --cov=avistamientos --cov-report=term-missing
 ```
 
-Para guardar el reporte en un archivo (queda en `docs/cobertura.txt`):
+Para guardar el reporte en un archivo:
 
 ```bash
-python -m pytest --cov=app --cov=validador --cov-report=term-missing > docs/cobertura.txt
+python -m pytest --cov=app --cov=avistamientos --cov-report=term-missing > docs/taller5/cobertura_despues.txt
 ```
+
+`docs/cobertura.txt` es el reporte de la entrega anterior (antes del refactor), cuando el código estaba en `app.py` y `validador.py`.
 
 Estructura:
 
 - `tests/test_validador.py`: pruebas unitarias de la validación (partición de equivalencia y valores límite), con el stub `RelojFijo`.
 - `tests/test_api.py`: pruebas de integración de los endpoints por HTTP (`test_client` de Flask), con una base SQLite temporal por prueba.
-- `tests/dobles.py`: doble de prueba (`RelojFijo`).
+- `tests/dobles.py`: doble de prueba (`RelojFijo`), un adaptador de prueba del puerto `Reloj`.
 - `docs/`: documento de justificación y reporte de cobertura.
+- `docs/taller5/`: documento del Taller 5 y evidencia antes/después del refactor.
 
 ## Uso de IA
 
