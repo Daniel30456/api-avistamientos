@@ -1,0 +1,104 @@
+### GET /avistamientos 
+[]
+
+-> HTTP 200
+
+### POST /avistamientos {"especie":"colibrí","lugar":"Parque Nacional","fecha":"2026-09-29","observador":"Ana"}
+{"especie":"colibr\u00ed","fecha":"2026-09-29","id":1,"lugar":"Parque Nacional","observador":"Ana"}
+
+-> HTTP 201
+
+### POST /avistamientos {"especie":"  águila  ","lugar":"Humedal Córdoba","fecha":"2026-10-01","observador":"Luis"}
+{"especie":"\u00e1guila","fecha":"2026-10-01","id":2,"lugar":"Humedal C\u00f3rdoba","observador":"Luis"}
+
+-> HTTP 201
+
+### POST /avistamientos {"especie":"colibrí","lugar":"Cerros Orientales","fecha":"2026-10-05","observador":"Ana"}
+{"especie":"colibr\u00ed","fecha":"2026-10-05","id":3,"lugar":"Cerros Orientales","observador":"Ana"}
+
+-> HTTP 201
+
+### GET /avistamientos 
+[{"especie":"colibr\u00ed","fecha":"2026-09-29","id":1,"lugar":"Parque Nacional","observador":"Ana"},{"especie":"\u00e1guila","fecha":"2026-10-01","id":2,"lugar":"Humedal C\u00f3rdoba","observador":"Luis"},{"especie":"colibr\u00ed","fecha":"2026-10-05","id":3,"lugar":"Cerros Orientales","observador":"Ana"}]
+
+-> HTTP 200
+
+### GET /avistamientos/1 
+{"especie":"colibr\u00ed","fecha":"2026-09-29","id":1,"lugar":"Parque Nacional","observador":"Ana"}
+
+-> HTTP 200
+
+### GET /avistamientos/999 
+{"error":"Avistamiento no encontrado"}
+
+-> HTTP 404
+
+### GET /avistamientos/resumen 
+[{"cantidad":2,"especie":"colibr\u00ed"},{"cantidad":1,"especie":"\u00e1guila"}]
+
+-> HTTP 200
+
+### PUT /avistamientos/1 {"especie":"colibrí","lugar":"Humedal Córdoba","fecha":"2026-09-29","observador":"Ana"}
+{"especie":"colibr\u00ed","fecha":"2026-09-29","id":1,"lugar":"Humedal C\u00f3rdoba","observador":"Ana"}
+
+-> HTTP 200
+
+### PUT /avistamientos/999 {"especie":"colibrí","lugar":"Humedal Córdoba","fecha":"2026-09-29","observador":"Ana"}
+{"error":"Avistamiento no encontrado"}
+
+-> HTTP 404
+
+### PUT /avistamientos/1 {"especie":"ab","lugar":"Humedal Córdoba","fecha":"2026-09-29","observador":"Ana"}
+{"error":"especie: debe tener entre 3 y 50 caracteres"}
+
+-> HTTP 400
+
+### POST /avistamientos {"especie":"ab","lugar":"Parque","fecha":"2026-09-29","observador":"Ana"}
+{"error":"especie: debe tener entre 3 y 50 caracteres"}
+
+-> HTTP 400
+
+### POST /avistamientos {"especie":"colibrí","lugar":"Parque","fecha":"2999-01-01","observador":"Ana"}
+{"error":"fecha: no puede ser posterior a hoy"}
+
+-> HTTP 400
+
+### POST /avistamientos {"especie":"colibrí","lugar":"Parque","fecha":"29-09-2026","observador":"Ana"}
+{"error":"fecha: debe tener formato AAAA-MM-DD"}
+
+-> HTTP 400
+
+### POST /avistamientos {"especie":"colibrí","lugar":"Parque","fecha":"2026-02-30","observador":"Ana"}
+{"error":"fecha: no es una fecha real"}
+
+-> HTTP 400
+
+### POST /avistamientos {"especie":"colibrí","lugar":"   ","fecha":"2026-09-29","observador":"Ana"}
+{"error":"lugar: es obligatorio y no puede estar vac\u00edo"}
+
+-> HTTP 400
+
+### POST /avistamientos ["no","es","un","objeto"]
+{"error":"El cuerpo debe ser un objeto JSON"}
+
+-> HTTP 400
+
+### DELETE /avistamientos/2 
+
+-> HTTP 204
+
+### DELETE /avistamientos/2 
+{"error":"Avistamiento no encontrado"}
+
+-> HTTP 404
+
+### GET /avistamientos 
+[{"especie":"colibr\u00ed","fecha":"2026-09-29","id":1,"lugar":"Humedal C\u00f3rdoba","observador":"Ana"},{"especie":"colibr\u00ed","fecha":"2026-10-05","id":3,"lugar":"Cerros Orientales","observador":"Ana"}]
+
+-> HTTP 200
+
+### GET /avistamientos/resumen 
+[{"cantidad":2,"especie":"colibr\u00ed"}]
+
+-> HTTP 200
+

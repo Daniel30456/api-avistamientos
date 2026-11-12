@@ -1,0 +1,31 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.18, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/claude/repo
+plugins: platformdirs-4.13.5, anyio-4.15.1
+collected 26 items
+
+tests/test_api.py ...........                                            [ 42%]
+tests/test_validador.py ...............                                  [100%]
+
+================================ tests coverage ================================
+Name                                                          Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------------------------
+app.py                                                           15      1    93%   30
+avistamientos/__init__.py                                         1      0   100%   
+avistamientos/adaptadores/__init__.py                             1      0   100%   
+avistamientos/adaptadores/primarios/__init__.py                   1      0   100%   
+avistamientos/adaptadores/primarios/http_flask.py                35      0   100%   
+avistamientos/adaptadores/secundarios/__init__.py                 1      0   100%   
+avistamientos/adaptadores/secundarios/reloj_sistema.py            6      0   100%   
+avistamientos/adaptadores/secundarios/repositorio_sqlite.py      41      0   100%   
+avistamientos/aplicacion/__init__.py                              1      0   100%   
+avistamientos/aplicacion/errores.py                               4      0   100%   
+avistamientos/aplicacion/modelo.py                               13      0   100%   
+avistamientos/aplicacion/puertos/__init__.py                      1      0   100%   
+avistamientos/aplicacion/puertos/primarios.py                    23      0   100%   
+avistamientos/aplicacion/puertos/secundarios.py                  25      0   100%   
+avistamientos/aplicacion/servicio.py                             39      0   100%   
+avistamientos/aplicacion/validador.py                            26      0   100%   
+-------------------------------------------------------------------------------------------
+TOTAL                                                           233      1    99%
+============================== 26 passed in 0.17s ==============================
