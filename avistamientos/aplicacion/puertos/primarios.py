@@ -12,7 +12,7 @@ from avistamientos.aplicacion.modelo import Avistamiento, ConteoPorEspecie
 class GestionDeAvistamientos(ABC):
     @abstractmethod
     def listar(self) -> List[Avistamiento]:
-        ...
+        """Todos los avistamientos, ordenados por id."""
 
     @abstractmethod
     def obtener(self, id_: int) -> Avistamiento:
