@@ -3,7 +3,8 @@ import sqlite3
 
 from flask import Flask, g, jsonify, request
 
-from validador import ValidadorDeAvistamiento
+from avistamientos.aplicacion.validador import ValidadorDeAvistamiento
+from avistamientos.adaptadores.secundarios.reloj_sistema import RelojSistema
 
 CAMPOS = ("especie", "lugar", "fecha", "observador")
 
@@ -13,7 +14,7 @@ def create_app(db_path=None, reloj=None):
     app.config["DB_PATH"] = db_path or os.path.join(
         os.path.dirname(os.path.abspath(__file__)), "avistamientos.db"
     )
-    validador = ValidadorDeAvistamiento(reloj)
+    validador = ValidadorDeAvistamiento(reloj or RelojSistema())
 
     # ---------- Base de datos (SQLite) ----------
     def get_db():

@@ -1,21 +1,22 @@
 import re
-from datetime import date, datetime
+from datetime import datetime
 
+from avistamientos.aplicacion.puertos.secundarios import Reloj
 
-class RelojSistema:
-    def hoy(self):
-        return date.today()
+CAMPOS = ("especie", "lugar", "fecha", "observador")
 
 
 class ValidadorDeAvistamiento:
-    def __init__(self, reloj=None):
-        self.reloj = reloj or RelojSistema()
+    def __init__(self, reloj: Reloj):
+        # El reloj llega por el puerto: el real lo pone la composición (app.py)
+        # y las pruebas ponen RelojFijo. La aplicación no conoce a ninguno.
+        self.reloj = reloj
 
     def validar(self, datos):
         """Devuelve un mensaje con el campo que falló, o None si es válido."""
         if not isinstance(datos, dict):
             return "El cuerpo debe ser un objeto JSON"
-        for campo in ("especie", "lugar", "fecha", "observador"):
+        for campo in CAMPOS:
             valor = datos.get(campo)
             if not isinstance(valor, str) or not valor.strip():
                 return f"{campo}: es obligatorio y no puede estar vacío"

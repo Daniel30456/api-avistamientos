@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 import pytest
-from validador import ValidadorDeAvistamiento, RelojSistema
+from avistamientos.aplicacion.validador import ValidadorDeAvistamiento
+from avistamientos.adaptadores.secundarios.reloj_sistema import RelojSistema
 from tests.dobles import RelojFijo
 
 HOY = date(2026, 10, 21)
