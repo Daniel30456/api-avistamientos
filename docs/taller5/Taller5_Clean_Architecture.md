@@ -3,9 +3,9 @@
 Ingeniería de Software 2 (ISW-2). Miércoles 11 de noviembre de 2026. Trabajo individual.
 API de avistamientos de aves (Python + Flask + SQLite).
 
-**Repositorio:** https://github.com/Daniel30456/api-avistamientos
-**Rama:** `main`
-**Arquitectura elegida:** hexagonal, o puertos y adaptadores (Cockburn, 2005).
+- **Repositorio:** https://github.com/Daniel30456/api-avistamientos
+- **Rama:** `main`
+- **Arquitectura elegida:** hexagonal, o puertos y adaptadores (Cockburn, 2005).
 
 ---
 
